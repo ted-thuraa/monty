@@ -18,12 +18,12 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		err1();
+		usageError();
 	}
 	file = fopen(argv[1], "r");//open file and read
 	if (!file)
 	{
-		failed_toread(argv[1]);
+		fileReadError(argv[1]);
 	}
 	global.datatype = 1;
 	while (getline(&buffer, &buflen, file) != -1);
@@ -47,5 +47,5 @@ int main(int argc, char **argv)
 	freeAll(&stack);
 	free(buffer);
 	fclose(file);
-	return (0);
+	exit(EXIT_SUCCESS);
 }
