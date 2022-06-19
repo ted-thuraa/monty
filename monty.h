@@ -1,22 +1,19 @@
-#ifndef MAIN_H
-#define MAIN_H
-#define _GNU_SOURCE
+
+#ifndef __MONTY__H
+#define __MONTY__H
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdarg.h>
-#include <stddef.h>
-#include <math.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+
 
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
- * @n: an integer
+ * @n: integer
  * @prev: points to the previous element of the stack (or queue)
  * @next: points to the next element of the stack (or queue)
  *
@@ -41,62 +38,51 @@ typedef struct stack_s
 typedef struct instruction_s
 {
 	char *opcode;
-	void(*f)(stack_t **stack, unsigned int line_number);
+	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
-/**
- * struct world - our global struct
- * @argument: argument of string
- * @datatype: wil be used to decide whether stack or queues
- * Description: global structure used to pass data around the functions easily
- */
-typedef struct world
-{
-	char *argument;
-	int datatype;
-} bully;
 
-extern bully global;
-bully global;
+extern stack_t *head;
 
-/* file operations*/
-void freeALL(stack_t **h);
-int isDigglet(char *string);
-void lineUp(stack_t **stack, stack_t *temp);
+/*Type for opcode functions*/
+typedef void (*op_func)(stack_t **, unsigned int);
+
+/*File operations*/
+void open_file(char *);
+void read_file(FILE *);
+int len_chars(FILE *);
 int interpret_line(char *, int, int);
 void find_func(char *, char *, int, int);
 
-/*stack operation*/
-void opcode(stack_t **stack, char *string, unsigned int lineCount);
+/*Stack operations*/
+stack_t *create_node(int n);
+void free_nodes(void);
+void print_stack(stack_t **, unsigned int);
+void add_to_stack(stack_t **, unsigned int);
+void add_to_queue(stack_t **, unsigned int);
+
+void call_fun(op_func, char *, char *, int, int);
 void print_top(stack_t **, unsigned int);
 void pop_top(stack_t **, unsigned int);
 void nop(stack_t **, unsigned int);
 void swap_nodes(stack_t **, unsigned int);
-void pall(stack_t **stack, unsigned int lineCount);
-void pint(stack_t **stack, unsigned int lineCount);
-void stackIt(stack_t **stack, stack_t *temp);
-void push(stack_t **stack, unsigned int lineCount);
-void pchar(stack_t **stack, unsigned int lineCount);
-/*String operations*/
-void print_char(stack_t **, unsigned int);
-void print_str(stack_t **, unsigned int);
-void rotr(stack_t **stack, unsigned int lineCount);
-void rotl(stack_t **, unsigned int);
+
 /*Math operations with nodes*/
 void add_nodes(stack_t **, unsigned int);
 void sub_nodes(stack_t **, unsigned int);
 void div_nodes(stack_t **, unsigned int);
 void mul_nodes(stack_t **, unsigned int);
 void mod_nodes(stack_t **, unsigned int);
+
 /*String operations*/
 void print_char(stack_t **, unsigned int);
 void print_str(stack_t **, unsigned int);
 void rotl(stack_t **, unsigned int);
+
 /*Error hanlding*/
-void usageError(void);
-void fileReadError(char *argv);
-void badOpCode(stack_t **stack, char *string, unsigned int lineCount);
-void mallocError(stack_t **stack);
-void integerError(stack_t **stack, int lineCount);
+void err(int error_code, ...);
+void more_err(int error_code, ...);
+void string_err(int error_code, ...);
+void rotr(stack_t **, unsigned int);
 
 
-#endif /*MAIN_H*/
+#endif /*__MONTY__H*/

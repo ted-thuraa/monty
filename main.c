@@ -1,51 +1,53 @@
 #include "monty.h"
-#include <stdio.h>
+stack_t *head = NULL;
 
 /**
- * main - our entry point
- * @argc: no of arguments
- * @argv: an array of arguments
- * Return: always 0 or error
+ * main - Entry Point
+ * @argc: Number of command line arguments.
+ * @argv: An array containing the arguments.
+ * Return: Always Zero.
  */
 int main(int argc, char **argv)
 {
-	unsigned int linecount = 1; /*tracks line count*/
-	size_t buflen = 0; /* buffer count */
-	char *string = NULL;/*store tockenized string or in other words the arguments*/
-	char *buffer = NULL;/* to store lines from the file */
-	stack_t *stack = NULL; /*our stack*/
-	FILE *file;/* pointer to our file */
+	if (argc < 2 || argc > 2)
+		err(1);
+	open_file(argv[1]);
+	free_nodes();
+	return (0);
+}
 
-	if (argc != 2)
+/**
+ * free_nodes - Frees nodes in the stack.
+ */
+void free_nodes(void)
+{
+	stack_t *tmp;
+
+	if (head == NULL)
+		return;
+
+	while (head != NULL)
 	{
-		usageError();
+		tmp = head;
+		head = head->next;
+		free(tmp);
 	}
-	file = fopen(argv[1], "r");//open file and read
-	if (!file)
-	{
-		fileReadError(argv[1]);
-	}
-	global.datatype = 1;
-	while (getline(&buffer, &buflen, file) != -1);
-	{
-		if (buffer == '\n')
-		{
-			linecount++;
-			continue;
-		}
-		string = strtok(buffer, "\t\n");/* tokenize the string*/
-		if (!string)
-		{
-			linecount++;
-			continue;
-		}
-		global.argument = strtok(NULL, "\t\n"); /* store the next string token */
-		opcode(&stack, string, linecount);
-		linecount++;
-	}
-	/*success exit*/
-	freeAll(&stack);
-	free(buffer);
-	fclose(file);
-	exit(EXIT_SUCCESS);
+}
+
+/**
+ * create_node - Creates and populates a node.
+ * @n: Number to go inside the node.
+ * Return: Upon sucess a pointer to the node. Otherwise NULL.
+ */
+stack_t *create_node(int n)
+{
+	stack_t *node;
+
+	node = malloc(sizeof(stack_t));
+	if (node == NULL)
+		err(4);
+	node->next = NULL;
+	node->prev = NULL;
+	node->n = n;
+	return (node);
 }
